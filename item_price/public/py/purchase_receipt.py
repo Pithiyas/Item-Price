@@ -9,7 +9,6 @@ def update_item_prince(items, company):
         item_price_data = frappe.db.sql("SELECT name, custom_price_type FROM `tabItem Price` WHERE item_code=%s ", (i['item_code']), as_dict=True)
 
         for row in item_price_data:
-            print("\n\n\n\n", row)
             if row['custom_price_type'] == 'Item Average':
                 data = frappe.db.sql("""
                     SELECT b.valuation_rate
@@ -31,7 +30,7 @@ def update_item_prince(items, company):
                     WHERE item_code = %s
                     ORDER BY creation DESC
                     LIMIT 1
-                """, (i['item_code'],), as_dict=True)
+                """, (i['item_code']), as_dict=True)
                 last_rate = 0
                 for i in data:
                     last_landed = i['landed_cost_voucher_amount'] / i['qty']
