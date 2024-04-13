@@ -12,6 +12,9 @@ app_license = "mit"
 # include js, css files in header of desk.html
 # app_include_css = "/assets/item_price/css/item_price.css"
 # app_include_js = "/assets/item_price/js/item_price.js"
+app_include_js = ["/assets/item_price/js/item_price.js",
+                  "/assets/item_price/js/purchase_receipt.js"
+                ]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/item_price/css/item_price.css"
@@ -227,3 +230,20 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+fixtures = [    
+    {"dt": "Report", "filters": [
+        [
+            "module", "in", [
+                "Custom App"
+            ],
+
+        ],
+        [
+            "report_type", "in", [
+                "Query Report",
+                "Report Builder"
+            ],
+
+        ]
+    ]},
+ ]

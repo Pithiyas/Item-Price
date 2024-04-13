@@ -1,0 +1,63 @@
+[
+ {
+  "add_total_row": 0,
+  "columns": [],
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [
+   {
+    "default": null,
+    "fieldname": "item_code",
+    "fieldtype": "Link",
+    "label": "Item",
+    "mandatory": 1,
+    "options": "Item",
+    "parent": "Stock Report",
+    "parentfield": "filters",
+    "parenttype": "Report",
+    "wildcard_filter": 0
+   },
+   {
+    "default": null,
+    "fieldname": "company",
+    "fieldtype": "Link",
+    "label": "company",
+    "mandatory": 1,
+    "options": "Company",
+    "parent": "Stock Report",
+    "parentfield": "filters",
+    "parenttype": "Report",
+    "wildcard_filter": 0
+   }
+  ],
+  "is_standard": "No",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2024-04-13 19:38:50.207229",
+  "module": "Custom App",
+  "name": "Stock Report",
+  "prepared_report": 0,
+  "query": "SELECT\n    bin.item_code AS 'Item Code',\n    item.item_name AS 'Item Name',\n    item.description AS 'Description of Item',\n    item.stock_uom AS 'Stock UOM',\n    item.item_group AS 'Item Group',\n    warehouse.company AS 'Company',\n    bin.warehouse AS 'Warehouse',\n    SUM(bin.actual_qty) AS 'Total Balance Qty',\n    FORMAT(ROUND(AVG(bin.valuation_rate), 2), 2) AS 'Average Price',\n    FORMAT(ROUND(SUM(bin.actual_qty) * AVG(bin.valuation_rate), 2), 2) AS 'Balance'\nFROM\n    `tabBin` bin\nINNER JOIN\n    `tabItem` item ON bin.item_code = item.name\nINNER JOIN\n    `tabWarehouse` warehouse ON bin.warehouse = warehouse.name\nWHERE\n    bin.item_code = %(item_code)s\n    AND (warehouse.company = %(company)s OR %(company)s IS NULL)\nGROUP BY\n    bin.item_code, warehouse.company, bin.warehouse\n\nUNION ALL\n\nSELECT\n    bin.item_code AS 'Item Code',\n    item.item_name AS 'Item Name',\n    item.description AS 'Description of Item',\n    item.stock_uom AS 'Stock UOM',\n    item.item_group AS 'Item Group',\n    warehouse.company AS 'Company',\n    NULL AS 'Warehouse',\n    SUM(bin.actual_qty) AS 'Total Balance Qty',\n    FORMAT(ROUND(AVG(bin.valuation_rate), 2), 2) AS 'Average Price',\n    FORMAT(ROUND(SUM(bin.actual_qty) * AVG(bin.valuation_rate), 2), 2) AS 'Balance'\nFROM\n    `tabBin` bin\nINNER JOIN\n    `tabItem` item ON bin.item_code = item.name\nINNER JOIN\n    `tabWarehouse` warehouse ON bin.warehouse = warehouse.name\nWHERE\n    bin.item_code = %(item_code)s\n    AND (warehouse.company = %(company)s OR %(company)s IS NULL)\nGROUP BY\n    warehouse.company\nORDER BY\n    `Item Code` ASC, `Company` ASC, `Warehouse` IS NULL, `Warehouse` ASC;\n",
+  "ref_doctype": "Stock Ledger Entry",
+  "reference_report": null,
+  "report_name": "Stock Report",
+  "report_script": null,
+  "report_type": "Query Report",
+  "roles": [
+   {
+    "parent": "Stock Report",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "Stock User"
+   },
+   {
+    "parent": "Stock Report",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "Accounts Manager"
+   }
+  ]
+ }
+]
