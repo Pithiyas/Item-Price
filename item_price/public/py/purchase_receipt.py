@@ -6,7 +6,7 @@ def update_item_prince(items, company):
     data = frappe.json.loads(items)
 
     for i in data: 
-        item_price_data = frappe.db.sql("SELECT name, custom_price_type FROM `tabItem Price` WHERE item_code=%s ", (i['item_code']), as_dict=True)
+        item_price_data = frappe.db.sql("SELECT name, custom_price_type,custom_company FROM `tabItem Price` WHERE item_code=%s ", (i['item_code']), as_dict=True)
 
         for row in item_price_data:
             if row['custom_price_type'] == 'Item Average':
@@ -15,7 +15,7 @@ def update_item_prince(items, company):
                     FROM `tabBin` b
                     INNER JOIN `tabWarehouse` w ON b.warehouse = w.name
                     WHERE b.item_code = %s AND w.company = %s
-                """, (i['item_code'], company), as_dict=True)
+                """, (i['item_code'], row['custom_company']), as_dict=True)
 
                 total_sum = sum(item['valuation_rate'] for item in data)
                 data_length = len(data)
